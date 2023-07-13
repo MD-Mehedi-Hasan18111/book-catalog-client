@@ -7,7 +7,7 @@ export default function MainLayout() {
   return (
     <div>
       <Navbar />
-      <div className="pt-8">
+      <div className="">
         <Outlet />
       </div>
       <Footer />
