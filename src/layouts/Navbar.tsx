@@ -39,12 +39,11 @@ const Navbar = () => {
                     All Books
                   </a>
                 </Link>
-                <a
-                  href="#"
-                  className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Add New
-                </a>
+                <Link to="/add-new-book">
+                  <a className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">
+                    Add New
+                  </a>
+                </Link>
               </div>
             </div>
           </div>
