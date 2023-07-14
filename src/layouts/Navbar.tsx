@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isShowMenus, setIsShowMenus] = useState(false);
@@ -11,7 +12,7 @@ const Navbar = () => {
 
   const handleToggleProfile = () => {
     setIsShowProfile(!isShowProfile);
-  }
+  };
 
   return (
     <nav className="bg-blue-600">
@@ -19,22 +20,25 @@ const Navbar = () => {
         <div className="relative flex items-center justify-between h-16">
           <div className="flex items-center justify-start">
             <div className="flex-shrink-0">
-              <img height="45px" width="45px" src="https://www.cityofsachse.com/ImageRepository/Document?documentID=7216" alt="logo" />
+              <img
+                height="45px"
+                width="45px"
+                src="https://www.cityofsachse.com/ImageRepository/Document?documentID=7216"
+                alt="logo"
+              />
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <a
-                  href="#"
-                  className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Home
-                </a>
-                <a
-                  href="#"
-                  className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  All Books
-                </a>
+                <Link to="/">
+                  <a className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">
+                    Home
+                  </a>
+                </Link>
+                <Link to="/all-books">
+                  <a className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">
+                    All Books
+                  </a>
+                </Link>
                 <a
                   href="#"
                   className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium"
@@ -47,7 +51,10 @@ const Navbar = () => {
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
               <div className="group inline-block">
-                <button onClick={handleToggleProfile} className="bg-white flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-600 focus:ring-white">
+                <button
+                  onClick={handleToggleProfile}
+                  className="bg-white flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-600 focus:ring-white"
+                >
                   <img
                     className="h-8 w-8 rounded-full"
                     src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?w=2000"
@@ -55,7 +62,9 @@ const Navbar = () => {
                   />
                 </button>
                 <ul
-                  className={`${isShowProfile ? "" : "hidden"} absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg py-2`}
+                  className={`${
+                    isShowProfile ? "" : "hidden"
+                  } absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg py-2`}
                 >
                   <li>
                     <a
