@@ -2,8 +2,10 @@ import moment from "moment";
 import React from "react";
 import { Helmet } from "react-helmet";
 import Card from "../components/Card";
+import { Link } from "react-router-dom";
 
 interface IBooks {
+  id: string;
   title: string;
   author: string;
   genre: string;
@@ -14,6 +16,7 @@ interface IBooks {
 const Home = () => {
   const books: IBooks[] = [
     {
+      id: "1",
       title: "Computer Programming",
       author: "Tamim Shahriar Subeen",
       genre: "Dimik",
@@ -22,6 +25,7 @@ const Home = () => {
         "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
     },
     {
+      id: "2",
       title: "Computer Programming",
       author: "Tamim Shahriar Subeen",
       genre: "Dimik",
@@ -30,6 +34,7 @@ const Home = () => {
         "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
     },
     {
+      id: "3",
       title: "Computer Programming",
       author: "Tamim Shahriar Subeen",
       genre: "Dimik",
@@ -38,6 +43,7 @@ const Home = () => {
         "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
     },
     {
+      id: "4",
       title: "Computer Programming",
       author: "Tamim Shahriar Subeen",
       genre: "Dimik",
@@ -46,6 +52,7 @@ const Home = () => {
         "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
     },
     {
+      id: "5",
       title: "Computer Programming",
       author: "Tamim Shahriar Subeen",
       genre: "Dimik",
@@ -54,6 +61,7 @@ const Home = () => {
         "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
     },
     {
+      id: "6",
       title: "Computer Programming",
       author: "Tamim Shahriar Subeen",
       genre: "Dimik",
@@ -62,6 +70,7 @@ const Home = () => {
         "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
     },
     {
+      id: "7",
       title: "Computer Programming",
       author: "Tamim Shahriar Subeen",
       genre: "Dimik",
@@ -70,6 +79,7 @@ const Home = () => {
         "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
     },
     {
+      id: "8",
       title: "Computer Programming",
       author: "Tamim Shahriar Subeen",
       genre: "Dimik",
@@ -78,6 +88,7 @@ const Home = () => {
         "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
     },
     {
+      id: "9",
       title: "Computer Programming",
       author: "Tamim Shahriar Subeen",
       genre: "Dimik",
@@ -132,9 +143,9 @@ const Home = () => {
           <div className="grid grid-cols-3 gap-x-10 gap-y-10">
             {books.map((book, i) => {
               return (
-                <div key={i}>
+                <Link key={i} to={`/details/${book.id}`}>
                   <Card book={book} />
-                </div>
+                </Link>
               );
             })}
           </div>
