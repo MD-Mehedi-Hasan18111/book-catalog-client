@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AiFillDelete } from "react-icons/ai";
 import { FiEdit2 } from "react-icons/fi";
 
@@ -145,9 +145,11 @@ const BookDetails = () => {
                 <h2 className="text-2xl font-bold mb-4">{book.title}</h2>
                 {/* Buttons */}
                 <div className="flex items-center">
-                  <button className="flex items-center px-4 py-[3px] bg-green-500 text-white rounded hover:bg-green-600 mr-3">
-                    <FiEdit2 className="text-[18px] mr-2" /> <span>Edit</span>
-                  </button>
+                  <Link to={`/edit-book/${book.id}`}>
+                    <button className="flex items-center px-4 py-[3px] bg-green-500 text-white rounded hover:bg-green-600 mr-3">
+                      <FiEdit2 className="text-[18px] mr-2" /> <span>Edit</span>
+                    </button>
+                  </Link>
                   <button className="flex items-center px-4 py-[3px] bg-red-500 text-white rounded hover:bg-red-600 ml-3">
                     <AiFillDelete className="text-[18px] mr-2" />{" "}
                     <span>Delete</span>
