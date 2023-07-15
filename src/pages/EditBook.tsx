@@ -1,12 +1,21 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import swal from "sweetalert";
+import {
+  useBookDetailsQuery,
+  useUpdateBookMutation,
+} from "../redux/features/books/booksApi";
 
 interface IBook {
-  id: string;
+  email: string;
   title: string;
   author: string;
   genre: string;
@@ -18,9 +27,8 @@ interface IBook {
 const EditBook: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   //   const navigate = useNavigate();
-
   const [bookInfo, setBookInfo] = useState<IBook>({
-    id: "",
+    email: "",
     title: "",
     author: "",
     genre: "",
@@ -29,12 +37,20 @@ const EditBook: React.FC = () => {
     summary: "",
   });
 
-  //   useEffect(() => {
-  //     axios.get<IBook>(`your-api-url/${id}`).then((response) => {
-  //       const bookData = response.data;
-  //       setBookInfo(bookData);
-  //     });
-  //   }, [id]);
+  // Call the useBookDetailsQuery hook
+  let bookData: IBook | null = null;
+  if (id) {
+    const { data } = useBookDetailsQuery(id);
+    bookData = data?.book;
+  }
+
+  // Update the bookInfo state when the bookData changes
+  useEffect(() => {
+    if (bookData) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      setBookInfo(bookData);
+    }
+  }, [bookData, id]);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -66,11 +82,19 @@ const EditBook: React.FC = () => {
     setBookInfo({ ...bookInfo, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const [updateBook] = useUpdateBookMutation();
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // axios.put(`your-api-url/${id}`, bookInfo).then(() => {
-    //   history.push(`/book/${id}`);
-    // });
+    setIsLoading(true);
+    const response: any = await updateBook({ id: id, data: bookInfo });
+    if (response?.data) {
+      swal(response?.data?.message, "", "success");
+      setIsLoading(false);
+    } else {
+      swal("Book update failed!", "", "error");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -145,7 +169,6 @@ const EditBook: React.FC = () => {
             accept="image/*"
             onChange={handleImageUpload}
             className="w-full mt-2"
-            required
           />
         </div>
         {bookInfo.image && (
@@ -171,12 +194,21 @@ const EditBook: React.FC = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
           ></textarea>
         </div>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
-        >
-          Update Book
-        </button>
+        {isLoading ? (
+          <button
+            disabled
+            className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
+          >
+            Loading...
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
+          >
+            Update Book
+          </button>
+        )}
       </form>
     </div>
   );

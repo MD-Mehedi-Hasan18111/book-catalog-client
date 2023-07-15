@@ -28,7 +28,7 @@ const booksApi = api.injectEndpoints({
       query: () => "/books/all-books",
     }),
     bookDetails: builder.query({
-      query: (id) => `/books/${id}`,
+      query: (id: string) => `/books/${id}`,
     }),
     booksFilter: builder.query({
       query: ({ genre, publicationYear }) => ({
