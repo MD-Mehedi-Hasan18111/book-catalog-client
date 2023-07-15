@@ -1,8 +1,51 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import React, { useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../redux/hooks/hooks";
+import { useSignInMutation } from "../redux/features/users/usersApi";
+import { setLoading } from "../redux/features/users/usersSlice";
+import swal from "sweetalert";
+import Cookies from 'js-cookie';
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { isLoading } = useAppSelector((state) => state.users);
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
+
+  const [signInMutation] = useSignInMutation();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const credential = { email, password };
+      dispatch(setLoading(true));
+      const response: any = await signInMutation(credential);
+      console.log(response);
+      if (response.data) {
+        // swal(response?.data?.message, "", "success");
+        Cookies.set('token', response?.data?.token);
+        navigate("/");
+        setEmail("");
+        setPassword("");
+      } else {
+        swal(response?.error?.data?.message, "", "error");
+      }
+      dispatch(setLoading(false));
+    } catch (error: any) {
+      console.error("Sign-in failed:", error);
+      dispatch(setLoading(false));
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -38,7 +81,7 @@ const Login = () => {
             <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
               Log In
             </h2>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="mb-6">
                 <label
                   htmlFor="email"
@@ -47,6 +90,8 @@ const Login = () => {
                   Email
                 </label>
                 <input
+                  onChange={(e) => setEmail(e.target.value)}
+                  defaultValue={email}
                   type="email"
                   id="email"
                   className="w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
@@ -61,18 +106,29 @@ const Login = () => {
                   Password
                 </label>
                 <input
+                  onChange={(e) => setPassword(e.target.value)}
+                  defaultValue={password}
                   type="password"
                   id="password"
                   className="w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
                   placeholder="Enter your password"
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 transition-colors"
-              >
-                Login
-              </button>
+              {isLoading ? (
+                <button
+                  disabled
+                  className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 transition-colors"
+                >
+                  Loading...
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 transition-colors"
+                >
+                  Login
+                </button>
+              )}
               <p className="text-gray-700 text-md mt-4">
                 have not account?{" "}
                 <Link to="/signup">

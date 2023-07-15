@@ -7,8 +7,6 @@ interface IUser {
     email: string | null;
   };
   isLoading: boolean;
-  isError: boolean;
-  error: string | null;
 }
 
 const initialState: IUser = {
@@ -16,8 +14,6 @@ const initialState: IUser = {
     email: null,
   },
   isLoading: false,
-  isError: false,
-  error: null,
 };
 
 const userSlice = createSlice({
@@ -30,16 +26,9 @@ const userSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
-    setError: (state, action: PayloadAction<boolean>) => {
-      state.isError = action.payload;
-    },
-    setErrorMessage: (state, action: PayloadAction<string | null>) => {
-      state.error = action.payload;
-    },
   },
 });
 
-export const { setUser, setLoading, setError, setErrorMessage } =
-  userSlice.actions;
+export const { setUser, setLoading } = userSlice.actions;
 
 export default userSlice.reducer;

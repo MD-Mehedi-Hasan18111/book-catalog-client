@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../redux/hooks/hooks";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/features/users/usersSlice";
 
 const Navbar = () => {
+  const { email } = useAppSelector((state) => state.users.user);
+  const dispatch = useDispatch();
+
   const [isShowMenus, setIsShowMenus] = useState(false);
   const [isShowProfile, setIsShowProfile] = useState(false);
 
@@ -12,6 +19,11 @@ const Navbar = () => {
 
   const handleToggleProfile = () => {
     setIsShowProfile(!isShowProfile);
+  };
+
+  const handleLogout = () => {
+    dispatch(setUser(null));
+    Cookies.remove("token");
   };
 
   return (
@@ -65,22 +77,35 @@ const Navbar = () => {
                     isShowProfile ? "" : "hidden"
                   } absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg py-2`}
                 >
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      User@gmail.com
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Sign Out
-                    </a>
-                  </li>
+                  {email && (
+                    <li className="block px-4 py-2 text-sm font-bold hover:bg-gray-100">
+                      {email}
+                    </li>
+                  )}
+                  {email ? (
+                    <li onClick={handleLogout}>
+                      <a className="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Sign Out
+                      </a>
+                    </li>
+                  ) : (
+                    <>
+                      <li>
+                        <Link to="/signup">
+                          <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            Sign Up
+                          </a>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/login">
+                          <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            Log In
+                          </a>
+                        </Link>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </div>
             </div>
