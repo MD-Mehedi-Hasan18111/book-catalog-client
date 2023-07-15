@@ -1,15 +1,21 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { useState } from "react";
 import { Helmet } from "react-helmet";
 import Card from "../components/Card";
 import { Link } from "react-router-dom";
+import { useGetAllBooksQuery } from "../redux/features/books/booksApi";
 
-interface IBooks {
-  id: string;
+interface IBook {
+  _id: string;
+  email: string;
   title: string;
   author: string;
   genre: string;
   publicationDate: string;
   image: string;
+  summary: string;
 }
 
 const AllBooks = () => {
@@ -37,89 +43,10 @@ const AllBooks = () => {
     "2023",
   ];
 
-  const books: IBooks[] = [
-    {
-      id: "1",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "2",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "3",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "4",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "5",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "6",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "7",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "8",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "9",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-  ];
+  const [selectGenre, setSelectGenre] = useState("");
+  const [selectpublicationYear, setSelectPublicationYear] = useState("");
+
+  const { data: books, isLoading } = useGetAllBooksQuery(undefined);
 
   return (
     <>
@@ -132,7 +59,13 @@ const AllBooks = () => {
         <div className="w-1/4 bg-gray-200 p-4">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Filters</h2>
-            <button className="text-[14px] bg-green-500 text-white px-[12px] py-[4px] rounded-[8px]">
+            <button
+              onClick={() => {
+                setSelectGenre("");
+                setSelectPublicationYear("");
+              }}
+              className="text-[14px] bg-green-500 text-white px-[12px] py-[4px] rounded-[8px]"
+            >
               Reset
             </button>
           </div>
@@ -201,15 +134,21 @@ const AllBooks = () => {
 
           {/* All Books */}
           <div className="mt-[20px] mb-[100px]">
-            <div className="grid grid-cols-3 gap-x-10 gap-y-10">
-              {books.map((book, i) => {
-                return (
-                  <Link key={i} to={`/details/${book.id}`}>
-                    <Card book={book} />
-                  </Link>
-                );
-              })}
-            </div>
+            {isLoading ? (
+              <div>
+                <h3 className="text-3xl font-[500] text-center">Loading...</h3>
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-x-10 gap-y-10">
+                {books?.books?.map((book: IBook, i: number) => {
+                  return (
+                    <Link key={i} to={`/details/${book?._id}`}>
+                      <Card book={book} />
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>
