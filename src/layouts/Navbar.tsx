@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAppSelector } from "../redux/hooks/hooks";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
-import { setUser } from "../redux/features/users/usersSlice";
+import { setLoading, setUser } from "../redux/features/users/usersSlice";
 
 const Navbar = () => {
   const { email } = useAppSelector((state) => state.users.user);
@@ -51,11 +51,13 @@ const Navbar = () => {
                     All Books
                   </a>
                 </Link>
-                <Link to="/add-new-book">
-                  <a className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">
-                    Add New
-                  </a>
-                </Link>
+                {email && (
+                  <Link to="/add-new-book">
+                    <a className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">
+                      Add New
+                    </a>
+                  </Link>
+                )}
               </div>
             </div>
           </div>
