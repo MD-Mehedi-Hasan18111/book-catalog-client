@@ -40,9 +40,11 @@ const BookDetails = () => {
 
   // Call the useBookDetailsQuery hook
   let bookData: IBook | null = null;
+  let isLoader: boolean | false = false;
   if (id) {
-    const { data } = useBookDetailsQuery(id);
+    const { data, isLoading } = useBookDetailsQuery(id);
     bookData = data?.book;
+    isLoader = isLoading;
   }
 
   // Update the bookInfo state when the bookData changes
@@ -106,7 +108,11 @@ const BookDetails = () => {
       </Helmet>
 
       <div className="container mx-auto py-8">
-        {book ? (
+        {isLoader ? (
+          <div className="text-center">
+            <h3 className="text-3xl font-bold">Loading...</h3>
+          </div>
+        ) : book ? (
           <div className="flex flex-wrap items-start">
             <div className="w-full md:w-1/2 lg:w-1/3">
               <img
@@ -165,34 +171,36 @@ const BookDetails = () => {
               )}
               <p className="text-lg mb-4">{book?.summary}</p>
 
-              {email && <form onSubmit={handleAddReview}>
-                <label htmlFor="review" className="text-lg font-[500] mb-3">
-                  Write Review
-                </label>
-                <textarea
-                  id="review"
-                  value={reviewComment}
-                  onChange={(e) => setReviewComment(e.target.value)}
-                  className="w-full h-32 p-2 mb-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
-                  placeholder="Write your review here..."
-                  required
-                ></textarea>
-                {isLoading ? (
-                  <button
-                    disabled
-                    className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
-                  >
-                    Loading...
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
-                  >
-                    Submit Review
-                  </button>
-                )}
-              </form>}
+              {email && (
+                <form onSubmit={handleAddReview}>
+                  <label htmlFor="review" className="text-lg font-[500] mb-3">
+                    Write Review
+                  </label>
+                  <textarea
+                    id="review"
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    className="w-full h-32 p-2 mb-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
+                    placeholder="Write your review here..."
+                    required
+                  ></textarea>
+                  {isLoading ? (
+                    <button
+                      disabled
+                      className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
+                    >
+                      Loading...
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
+                    >
+                      Submit Review
+                    </button>
+                  )}
+                </form>
+              )}
 
               <h3 className="text-xl font-bold mt-6">Customer Reviews</h3>
               <div className="mb-4">
