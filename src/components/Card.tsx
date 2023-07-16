@@ -29,7 +29,7 @@ const Card = ({ book }: IBook) => {
             </div>
           </div>
           <p className="text-[14px] text-white">
-            Published by {moment(book.publicationDate).format("DDD MMMM, YYYY")}
+            Published by {moment(book.publicationDate).format("DD MMMM, YYYY")}
           </p>
         </div>
       </div>

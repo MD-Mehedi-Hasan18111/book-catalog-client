@@ -42,6 +42,12 @@ const booksApi = api.injectEndpoints({
         providesTags: ["addNewBook", "deleteBook"],
       }),
     }),
+    getRecentBooks: builder.query({
+      query: () => ({
+        url: "/books/recent-published",
+        providesTags: ["addNewBook"],
+      }),
+    }),
     bookDetails: builder.query({
       query: (id: string) => `/books/${id}`,
       providesTags: ["bookDetails", "bookReview"],
@@ -55,5 +61,6 @@ export const {
   useDeleteBookMutation,
   useGetAllBooksQuery,
   useBookDetailsQuery,
+  useGetRecentBooksQuery,
   useBookReviewMutation,
 } = booksApi;

@@ -1,102 +1,26 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import moment from "moment";
 import React from "react";
 import { Helmet } from "react-helmet";
 import Card from "../components/Card";
 import { Link } from "react-router-dom";
+import { useGetRecentBooksQuery } from "../redux/features/books/booksApi";
 
-interface IBooks {
-  id: string;
+interface IBook {
+  _id: string;
+  email: string;
   title: string;
   author: string;
   genre: string;
   publicationDate: string;
   image: string;
+  customerReviews: [];
 }
 
 const Home = () => {
-  const books: IBooks[] = [
-    {
-      id: "1",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "2",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "3",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "4",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "5",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "6",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "7",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "8",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "9",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-  ];
+  const { data: books, isLoading } = useGetRecentBooksQuery(undefined);
 
   return (
     <>
@@ -141,9 +65,9 @@ const Home = () => {
             Recently Published Books
           </h3>
           <div className="grid grid-cols-3 gap-x-10 gap-y-10">
-            {books.map((book, i) => {
+            {books?.books?.map((book: IBook, i: number) => {
               return (
-                <Link key={i} to={`/details/${book.id}`}>
+                <Link key={i} to={`/details/${book._id}`}>
                   <Card book={book} />
                 </Link>
               );
