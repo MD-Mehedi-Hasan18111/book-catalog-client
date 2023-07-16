@@ -10,6 +10,7 @@ const booksApi = api.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["addNewBook"],
     }),
     updateBook: builder.mutation({
       query: ({ id, data }) => ({
@@ -17,30 +18,25 @@ const booksApi = api.injectEndpoints({
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: ["bookDetails"],
     }),
     deleteBook: builder.mutation({
-      query: (id) => ({
+      query: (id: string) => ({
         url: `/books/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["deleteBook"],
     }),
     getAllBooks: builder.query({
-      query: () => "/books/all-books",
+      query: ({ search, genre, publicationYear }) => ({
+        url: "/books/all-books",
+        params: { search, genre, publicationYear },
+        providesTags: ["addNewBook", "deleteBook"],
+      }),
     }),
     bookDetails: builder.query({
       query: (id: string) => `/books/${id}`,
-    }),
-    booksFilter: builder.query({
-      query: ({ genre, publicationYear }) => ({
-        url: "/books",
-        params: { genre, publicationYear },
-      }),
-    }),
-    booksSearch: builder.query({
-      query: ({ search }) => ({
-        url: "/books",
-        params: { search },
-      }),
+      providesTags: ["bookDetails"],
     }),
   }),
 });
@@ -51,6 +47,4 @@ export const {
   useDeleteBookMutation,
   useGetAllBooksQuery,
   useBookDetailsQuery,
-  useBooksFilterQuery,
-  useBooksSearchQuery,
 } = booksApi;

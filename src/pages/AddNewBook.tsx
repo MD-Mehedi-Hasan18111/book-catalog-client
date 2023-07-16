@@ -10,6 +10,7 @@ import { Helmet } from "react-helmet";
 import { useAppSelector } from "../redux/hooks/hooks";
 import { useAddBookMutation } from "../redux/features/books/booksApi";
 import swal from "sweetalert";
+import { useNavigate } from "react-router";
 
 interface IBookInfo {
   email: string;
@@ -19,9 +20,12 @@ interface IBookInfo {
   publicationDate: string;
   image: string;
   summary?: string;
+  customerReviews?: [];
 }
 
 const AddNewBook = () => {
+  const navigate = useNavigate();
+
   const { email } = useAppSelector((state) => state.users.user);
 
   const [isLoad, setIsLoad] = useState(false);
@@ -69,10 +73,10 @@ const AddNewBook = () => {
     // Perform book submission logic here
     if (email) {
       bookInfo.email = email;
+      bookInfo.customerReviews = [];
     }
     setIsLoad(true);
     const response: any = await addBook(bookInfo);
-    console.log(response);
     if (response?.data) {
       swal(response?.data?.message, "", "success");
       // Reset the form fields
@@ -85,8 +89,11 @@ const AddNewBook = () => {
         image: "",
         summary: "",
       });
+      navigate("/all-books");
+      setIsLoad(false);
     } else {
       swal("Book Added Failed", "", "error");
+      setIsLoad(false);
     }
   };
 
@@ -140,7 +147,7 @@ const AddNewBook = () => {
               required
             >
               <option value="">Select Genre</option>
-              <option value="Thriller">Fantasy</option>
+              <option value="Fantasy">Fantasy</option>
               <option value="Science Fiction">Science Fiction</option>
               <option value="Mystery">Mystery</option>
               <option value="Historical Fiction">Historical Fiction</option>
@@ -201,12 +208,21 @@ const AddNewBook = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
             ></textarea>
           </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
-          >
-            Add Book
-          </button>
+          {isLoad ? (
+            <button
+              disabled
+              className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
+            >
+              Loading...
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
+            >
+              Add Book
+            </button>
+          )}
         </form>
       </div>
     </>

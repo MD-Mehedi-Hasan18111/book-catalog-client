@@ -21,7 +21,7 @@ interface IBook {
 const AllBooks = () => {
   const genres = [
     "Mystery",
-    "Thriller",
+    "Fantasy",
     "Science Fiction",
     "Historical Fiction",
     "Poetry",
@@ -43,10 +43,16 @@ const AllBooks = () => {
     "2023",
   ];
 
+  // Filter Books
   const [selectGenre, setSelectGenre] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [selectpublicationYear, setSelectPublicationYear] = useState("");
 
-  const { data: books, isLoading } = useGetAllBooksQuery(undefined);
+  const { data: books, isLoading } = useGetAllBooksQuery({
+    search: searchText,
+    genre: selectGenre,
+    publicationYear: selectpublicationYear
+  });
 
   return (
     <>
@@ -78,10 +84,12 @@ const AllBooks = () => {
                   return (
                     <div key={i} className="flex items-center mb-[8px]">
                       <input
+                        onChange={() => setSelectGenre(genre)}
                         className="h-[18px] w-[18px]"
                         id={genre}
                         type="radio"
                         name="genre"
+                        checked={selectGenre === genre}
                       />
                       <label className="text-[14px] ml-3" htmlFor={genre}>
                         {genre}
@@ -97,17 +105,19 @@ const AllBooks = () => {
                   By Publication Year:
                 </h2>
                 <div className="mt-2">
-                  {publicationYears?.map((genre, i) => {
+                  {publicationYears?.map((year, i) => {
                     return (
                       <div key={i} className="flex items-center mb-[8px]">
                         <input
+                          onChange={() => setSelectPublicationYear(year)}
                           className="h-[18px] w-[18px]"
-                          id={genre}
+                          id={year}
                           type="radio"
-                          name="genre"
+                          name="year"
+                          checked={selectpublicationYear === year}
                         />
-                        <label className="text-[14px] ml-3" htmlFor={genre}>
-                          {genre}
+                        <label className="text-[14px] ml-3" htmlFor={year}>
+                          {year}
                         </label>
                       </div>
                     );
@@ -123,13 +133,11 @@ const AllBooks = () => {
           {/* Search bar */}
           <div className="flex items-center mb-4">
             <input
+              onChange={(e) => setSearchText(e.target.value)}
               className="border border-gray-300 p-2 mr-2 flex-grow"
               type="text"
               placeholder="Search..."
             />
-            <button className="bg-green-500 text-white py-2 px-4 rounded">
-              Search
-            </button>
           </div>
 
           {/* All Books */}

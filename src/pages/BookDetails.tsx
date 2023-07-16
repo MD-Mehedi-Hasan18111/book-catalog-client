@@ -1,127 +1,97 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link, useParams } from "react-router-dom";
+import swal from "sweetalert";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { AiFillDelete } from "react-icons/ai";
 import { FiEdit2 } from "react-icons/fi";
+import {
+  useBookDetailsQuery,
+  useDeleteBookMutation,
+} from "../redux/features/books/booksApi";
+import { useAppSelector } from "../redux/hooks/hooks";
 
-interface IBooks {
-  id: string;
+interface IBook {
+  _id: string;
+  email: string;
   title: string;
   author: string;
   genre: string;
   publicationDate: string;
   image: string;
+  summary: string;
+  customerReviews: [];
 }
 
 const BookDetails = () => {
-  const books: IBooks[] = [
-    {
-      id: "1",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "2",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "3",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "4",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "5",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "6",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "7",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "8",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-    {
-      id: "9",
-      title: "Computer Programming",
-      author: "Tamim Shahriar Subeen",
-      genre: "Dimik",
-      publicationDate: "2015-01-01",
-      image:
-        "https://static-01.daraz.com.bd/p/e5af5d950fff75fffd7f6a79d7aab4e3.jpg",
-    },
-  ];
+  const navigate = useNavigate();
+  const { email } = useAppSelector((state) => state.users.user);
 
   const { id } = useParams<{ id: string }>();
 
-  const [book, setBook] = useState<IBooks | null>(null);
-  const [review, setReview] = useState<{
-    email: string;
-    comment: string;
-  } | null>(null);
-  const [customerReviews, setCustomerReviews] = useState<
-    { email: string; comment: string }[]
-  >([]);
+  const [book, setBook] = useState<IBook | null>(null);
 
+  // const [review, setReview] = useState<{
+  //   email: string;
+  //   comment: string;
+  // } | null>(null);
+  // const [customerReviews, setCustomerReviews] = useState<
+  //   { email: string; comment: string }[]
+  // >([]);
+
+  // Call the useBookDetailsQuery hook
+  let bookData: IBook | null = null;
+  if (id) {
+    const { data } = useBookDetailsQuery(id);
+    bookData = data?.book;
+  }
+
+  // Update the bookInfo state when the bookData changes
   useEffect(() => {
-    const findBook = books.find((book) => book.id == id);
-    setBook(findBook || null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  const handleReviewSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (review) {
-      setCustomerReviews([...customerReviews, review]);
-      setReview(null);
+    if (bookData) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      setBook(bookData);
     }
+  }, [bookData, id]);
+
+  // const handleReviewSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (review) {
+  //     setCustomerReviews([...customerReviews, review]);
+  //     setReview(null);
+  //   }
+  // };
+
+  // Book Delete
+  const [deleteBook] = useDeleteBookMutation();
+  const [isDeleteLoad, setDeleteLoad] = useState(false);
+  const handleDeleteBook = () => {
+    swal({
+      title: "Are you sure?",
+      icon: "warning",
+      buttons: ["Cancel", "Yes"],
+      dangerMode: false,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        if (id) {
+          setDeleteLoad(true);
+          const response: any = await deleteBook(id);
+          if (response?.data) {
+            swal(response?.data?.message, "", "success");
+            navigate("/all-books");
+            setDeleteLoad(false);
+          } else {
+            swal("Book delete operation failed!", "", "error");
+            setDeleteLoad(false);
+          }
+        }
+      }
+    });
   };
 
   return (
@@ -145,15 +115,32 @@ const BookDetails = () => {
                 <h2 className="text-2xl font-bold mb-4">{book.title}</h2>
                 {/* Buttons */}
                 <div className="flex items-center">
-                  <Link to={`/edit-book/${book.id}`}>
-                    <button className="flex items-center px-4 py-[3px] bg-green-500 text-white rounded hover:bg-green-600 mr-3">
-                      <FiEdit2 className="text-[18px] mr-2" /> <span>Edit</span>
-                    </button>
+                  <Link to={`/edit-book/${book._id}`}>
+                    {email == book?.email && (
+                      <button className="flex items-center px-4 py-[3px] bg-green-500 text-white rounded hover:bg-green-600 mr-3">
+                        <FiEdit2 className="text-[18px] mr-2" />{" "}
+                        <span>Edit</span>
+                      </button>
+                    )}
                   </Link>
-                  <button className="flex items-center px-4 py-[3px] bg-red-500 text-white rounded hover:bg-red-600 ml-3">
-                    <AiFillDelete className="text-[18px] mr-2" />{" "}
-                    <span>Delete</span>
-                  </button>
+                  {email == book?.email &&
+                    (isDeleteLoad ? (
+                      <button
+                        disabled
+                        className="flex items-center px-4 py-[3px] bg-red-500 text-white rounded hover:bg-red-600 ml-3"
+                      >
+                        Loading...
+                      </button>
+                    ) : (
+                      <button
+                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                        onClick={handleDeleteBook}
+                        className="flex items-center px-4 py-[3px] bg-red-500 text-white rounded hover:bg-red-600 ml-3"
+                      >
+                        <AiFillDelete className="text-[18px] mr-2" />{" "}
+                        <span>Delete</span>
+                      </button>
+                    ))}
                 </div>
               </div>
               <p className="text-lg mb-2">
@@ -166,30 +153,26 @@ const BookDetails = () => {
                 <span className="font-bold">Publication Year:</span>{" "}
                 {moment(book.publicationDate).format("DD MMMM, YYYY")}
               </p>
-              <h3 className="text-xl font-[500] mt-4 mb-2">
-                Summary about {book.title}
-              </h3>
-              <p className="text-lg mb-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-                consequat convallis est, at fermentum sapien bibendum sit amet.
-                Sed faucibus risus non lacus vulputate, eu fermentum mauris
-                eleifend. Aliquam venenatis tincidunt nisi, eget dapibus ligula
-                commodo in.
-              </p>
+              {book?.summary && (
+                <h3 className="text-xl font-[500] mt-4 mb-2">
+                  Summary about {book.title}
+                </h3>
+              )}
+              <p className="text-lg mb-4">{book?.summary}</p>
 
-              <form onSubmit={handleReviewSubmit}>
+              <form>
                 <label htmlFor="review" className="text-lg font-[500] mb-3">
                   Write Review
                 </label>
                 <textarea
                   id="review"
-                  value={review?.comment || ""}
-                  onChange={(e) =>
-                    setReview({
-                      email: "user@RiGameFill.com",
-                      comment: e.target.value,
-                    })
-                  }
+                  // value={review?.comment || ""}
+                  // onChange={(e) =>
+                  //   setReview({
+                  //     email: "user@RiGameFill.com",
+                  //     comment: e.target.value,
+                  //   })
+                  // }
                   className="w-full h-32 p-2 mb-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
                   placeholder="Write your review here..."
                 ></textarea>
@@ -203,21 +186,23 @@ const BookDetails = () => {
 
               <h3 className="text-xl font-bold mt-6">Customer Reviews</h3>
               <div className="mb-4">
-                {customerReviews.length > 0 ? (
+                {book?.customerReviews.length > 0 ? (
                   <ul className="space-y-4">
-                    {customerReviews.map((review, index) => (
-                      <li key={index} className="flex items-start mt-4">
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?w=2000"
-                          alt="User Profile"
-                        />
-                        <div className="ml-4">
-                          <p className="font-[600]">{review.email}</p>
-                          <p className="py-2 rounded">{review.comment}</p>
-                        </div>
-                      </li>
-                    ))}
+                    {book?.customerReviews.map(
+                      (review: { email: string; comment: string }, index) => (
+                        <li key={index} className="flex items-start mt-4">
+                          <img
+                            className="h-8 w-8 rounded-full"
+                            src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?w=2000"
+                            alt="User Profile"
+                          />
+                          <div className="ml-4">
+                            <p className="font-[600]">{review.email}</p>
+                            <p className="py-2 rounded">{review.comment}</p>
+                          </div>
+                        </li>
+                      )
+                    )}
                   </ul>
                 ) : (
                   <p>No reviews yet.</p>

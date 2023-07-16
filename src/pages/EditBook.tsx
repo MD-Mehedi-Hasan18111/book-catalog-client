@@ -26,7 +26,7 @@ interface IBook {
 
 const EditBook: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  //   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [bookInfo, setBookInfo] = useState<IBook>({
     email: "",
     title: "",
@@ -90,6 +90,9 @@ const EditBook: React.FC = () => {
     const response: any = await updateBook({ id: id, data: bookInfo });
     if (response?.data) {
       swal(response?.data?.message, "", "success");
+      if (id) {
+        navigate(`/details/${id}`);
+      }
       setIsLoading(false);
     } else {
       swal("Book update failed!", "", "error");
