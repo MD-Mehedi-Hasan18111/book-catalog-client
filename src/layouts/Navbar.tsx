@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../redux/hooks/hooks";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
-import { setLoading, setUser } from "../redux/features/users/usersSlice";
+import { setUser } from "../redux/features/users/usersSlice";
 
 const Navbar = () => {
   const { email } = useAppSelector((state) => state.users.user);

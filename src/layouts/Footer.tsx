@@ -1,5 +1,3 @@
-
-import React from 'react';
 import { RiFacebookBoxFill, RiInstagramLine } from 'react-icons/ri';
 export default function Footer() {
   const date = new Date();

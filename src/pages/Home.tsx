@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import moment from "moment";
-import React from "react";
 import { Helmet } from "react-helmet";
 import Card from "../components/Card";
 import { Link } from "react-router-dom";
@@ -20,7 +18,7 @@ interface IBook {
 }
 
 const Home = () => {
-  const { data: books, isLoading } = useGetRecentBooksQuery(undefined);
+  const { data: books } = useGetRecentBooksQuery(undefined);
 
   return (
     <>
