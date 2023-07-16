@@ -113,7 +113,7 @@ const BookDetails = () => {
             <h3 className="text-3xl font-bold">Loading...</h3>
           </div>
         ) : book ? (
-          <div className="flex flex-wrap items-start">
+          <div className="flex flex-wrap items-start mx-[80px]">
             <div className="w-full md:w-1/2 lg:w-1/3">
               <img
                 src={book.image}
