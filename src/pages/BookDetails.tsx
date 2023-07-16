@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -12,6 +13,7 @@ import { AiFillDelete } from "react-icons/ai";
 import { FiEdit2 } from "react-icons/fi";
 import {
   useBookDetailsQuery,
+  useBookReviewMutation,
   useDeleteBookMutation,
 } from "../redux/features/books/booksApi";
 import { useAppSelector } from "../redux/hooks/hooks";
@@ -36,14 +38,6 @@ const BookDetails = () => {
 
   const [book, setBook] = useState<IBook | null>(null);
 
-  // const [review, setReview] = useState<{
-  //   email: string;
-  //   comment: string;
-  // } | null>(null);
-  // const [customerReviews, setCustomerReviews] = useState<
-  //   { email: string; comment: string }[]
-  // >([]);
-
   // Call the useBookDetailsQuery hook
   let bookData: IBook | null = null;
   if (id) {
@@ -58,14 +52,6 @@ const BookDetails = () => {
       setBook(bookData);
     }
   }, [bookData, id]);
-
-  // const handleReviewSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (review) {
-  //     setCustomerReviews([...customerReviews, review]);
-  //     setReview(null);
-  //   }
-  // };
 
   // Book Delete
   const [deleteBook] = useDeleteBookMutation();
@@ -92,6 +78,25 @@ const BookDetails = () => {
         }
       }
     });
+  };
+
+  // Review add for book
+  const [addReview] = useBookReviewMutation();
+  const [reviewComment, setReviewComment] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const handleAddReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    const response: any = await addReview({
+      id: id,
+      data: { email: email, comment: reviewComment },
+    });
+    if (response?.data) {
+      setReviewComment("");
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -160,35 +165,40 @@ const BookDetails = () => {
               )}
               <p className="text-lg mb-4">{book?.summary}</p>
 
-              <form>
+              {email && <form onSubmit={handleAddReview}>
                 <label htmlFor="review" className="text-lg font-[500] mb-3">
                   Write Review
                 </label>
                 <textarea
                   id="review"
-                  // value={review?.comment || ""}
-                  // onChange={(e) =>
-                  //   setReview({
-                  //     email: "user@RiGameFill.com",
-                  //     comment: e.target.value,
-                  //   })
-                  // }
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
                   className="w-full h-32 p-2 mb-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
                   placeholder="Write your review here..."
+                  required
                 ></textarea>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
-                >
-                  Submit Review
-                </button>
-              </form>
+                {isLoading ? (
+                  <button
+                    disabled
+                    className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
+                  >
+                    Loading...
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
+                  >
+                    Submit Review
+                  </button>
+                )}
+              </form>}
 
               <h3 className="text-xl font-bold mt-6">Customer Reviews</h3>
               <div className="mb-4">
                 {book?.customerReviews.length > 0 ? (
                   <ul className="space-y-4">
-                    {book?.customerReviews.map(
+                    {book?.customerReviews?.map(
                       (review: { email: string; comment: string }, index) => (
                         <li key={index} className="flex items-start mt-4">
                           <img
